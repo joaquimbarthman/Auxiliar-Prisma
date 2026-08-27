@@ -1,5 +1,6 @@
 {
-  "name": "meu-bot",
+  "name": "auxiliar-prisma",
+  "description": "Bot do Discord que disponibiliza a atividade de um usuario pela API.",
   "version": "1.0.0",
   "type": "module",
   "main": "index.js",

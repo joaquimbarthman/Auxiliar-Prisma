@@ -1,0 +1,21 @@
+# Dependencias
+node_modules/
+
+# Credenciais e configuracoes locais
+.env
+.env.*
+!.env.example
+
+# Logs e arquivos temporarios
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.DS_Store
+Thumbs.db
+
+# Cobertura e caches
+coverage/
+.cache/
+
