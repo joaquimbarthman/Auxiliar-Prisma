@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 dotenv.config();
 
-import { Client, GatewayIntentBits, Partials } from "discord.js";
+import { Client, Events, GatewayIntentBits, Partials } from "discord.js";
 import express from "express";
 import cors from "cors";
 import fetch from "node-fetch";
@@ -78,7 +78,7 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.options("*", cors(corsOptions));
+app.options("{*splat}", cors(corsOptions));
 app.use(globalLimiter);
 
 
@@ -191,7 +191,7 @@ const client = new Client({
 });
 
 client.once(
-  "ready",
+  Events.ClientReady,
   () => {
     console.log(
       `🤖 Bot online como ${client.user.tag}!`
