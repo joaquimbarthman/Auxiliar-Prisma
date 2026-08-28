@@ -23,21 +23,22 @@ app.disable("x-powered-by");
 const corsOptions = {
   origin: function (origin, callback) {
     // Permite requisições sem origin
+    // Ex.: UptimeRobot, Postman, servidor etc.
     if (!origin) {
       return callback(null, true);
     }
 
     const allowedDomains = [
       "http://127.0.0.1:5500",
+      "http://localhost:5500",
       "https://barthman.com.br",
       "https://www.barthman.com.br",
       "https://dashboard.uptimerobot.com",
     ];
 
-    // Permite barthman.xyz e subdomínios
-    const isBarthmanSubdomain = origin.match(
-      /^https:\/\/([a-z0-9-]+\.)?barthman\.xyz$/
-    );
+    // Permite barthman.xyz e qualquer subdomínio
+    const isBarthmanSubdomain =
+      /^https:\/\/([a-z0-9-]+\.)?barthman\.xyz$/i.test(origin);
 
     if (
       allowedDomains.includes(origin) ||
@@ -45,6 +46,8 @@ const corsOptions = {
     ) {
       return callback(null, true);
     }
+
+    console.warn(`CORS bloqueado para: ${origin}`);
 
     return callback(
       new Error("Não permitido por CORS")
@@ -67,6 +70,7 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.options("*", cors(corsOptions));
+
 
 // ======================================================
 // MIDDLEWARES
