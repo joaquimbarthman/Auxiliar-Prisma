@@ -9,12 +9,19 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import crypto from "crypto";
+import {
+  configureSecurity,
+  globalLimiter,
+  profileViewLimiter,
+  statusLimiter,
+} from "./security.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
 app.disable("x-powered-by");
+configureSecurity(app);
 
 // ======================================================
 // CORS
@@ -49,9 +56,11 @@ const corsOptions = {
 
     console.warn(`CORS bloqueado para: ${origin}`);
 
-    return callback(
-      new Error("Não permitido por CORS")
-    );
+    const corsError =
+      new Error("Não permitido por CORS");
+
+    corsError.status = 403;
+    return callback(corsError);
   },
 
   methods: [
@@ -70,6 +79,7 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.options("*", cors(corsOptions));
+app.use(globalLimiter);
 
 
 // ======================================================
@@ -880,6 +890,7 @@ app.get(
 
 app.post(
   "/api/profile-view",
+  profileViewLimiter,
   async (
     req,
     res
@@ -922,11 +933,9 @@ app.post(
         await getSupabaseVisitorCount();
 
       console.log(
-        `${
-          isNewVisitor
-            ? "Novo visitante"
-            : "Visitante já existente"
-        }: ${uidUnico}`
+        isNewVisitor
+          ? "Novo visitante registrado"
+          : "Visitante ja existente"
       );
 
       return res.json({
@@ -1017,6 +1026,7 @@ app.get(
 
 app.get(
   "/api/status",
+  statusLimiter,
   async (
     req,
     res
@@ -1459,6 +1469,15 @@ app.use(
         .json({
           error:
             "JSON invalido",
+        });
+    }
+
+    if (err.status === 403) {
+      return res
+        .status(403)
+        .json({
+          error:
+            "Origem nao permitida",
         });
     }
 

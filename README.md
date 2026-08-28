@@ -23,6 +23,9 @@ CLIENT_TWITCH=client_id_da_twitch
 SECRET_TWITCH=client_secret_da_twitch
 PORT=3000
 
+# Use 1 somente se a hospedagem utilizar um unico proxy reverso confiavel.
+TRUST_PROXY_HOPS=0
+
 # Persistencia opcional no Supabase
 SUPABASE_URL=https://seu-projeto.supabase.co
 SUPABASE_SERVICE_ROLE_KEY=chave_service_role
@@ -36,10 +39,16 @@ repositorio.
 
 ```bash
 npm install
+npm test
 npm start
 ```
 
 A API fica disponivel em `http://localhost:3000` por padrao.
+
+A API aplica limites por endereco IP: 300 requisicoes a cada 15 minutos,
+60 consultas de status por minuto e 3 tentativas de registro de visitante por
+dia. Em ambientes com mais de uma instancia, configure um armazenamento
+compartilhado para os limites antes de escalar horizontalmente.
 
 ## Rotas
 
