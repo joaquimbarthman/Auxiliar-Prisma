@@ -1,18 +1,25 @@
 const PLACEHOLDER_VALUES = new Set([
-  "change-me", "replace-me", "token_do_bot",
-  "client_secret_da_twitch", "chave_service_role",
+  "change-me",
+  "replace-me",
+  "token_do_bot",
+  "client_secret_da_twitch",
+  "chave_service_role",
 ]);
 
 function required(env, name) {
   const value = env[name]?.trim();
   if (!value || PLACEHOLDER_VALUES.has(value.toLowerCase())) {
-    throw new Error(`Variavel de ambiente obrigatoria ausente ou insegura: ${name}`);
+    throw new Error(
+      `Variavel de ambiente obrigatoria ausente ou insegura: ${name}`,
+    );
   }
   return value;
 }
 
 export function loadConfig(env = process.env) {
   const isProduction = (env.NODE_ENV || "development") === "production";
+  const defaultProductionOrigins =
+    "https://barthman.com.br,https://www.barthman.com.br";
   const hasSupabaseUrl = Boolean(env.SUPABASE_URL?.trim());
   const hasSupabaseKey = Boolean(env.SUPABASE_SERVICE_ROLE_KEY?.trim());
   if (hasSupabaseUrl !== hasSupabaseKey || (isProduction && !hasSupabaseUrl)) {
@@ -28,19 +35,27 @@ export function loadConfig(env = process.env) {
     throw new Error("PORT deve ser um numero entre 1 e 65535");
   }
 
-  const allowedOrigins = (env.ALLOWED_ORIGINS || "").split(",")
-    .map((value) => value.trim()).filter(Boolean).map((origin) => {
+  const allowedOrigins = (
+    env.ALLOWED_ORIGINS || (isProduction ? defaultProductionOrigins : "")
+  )
+    .split(",")
+    .map((value) => value.trim())
+    .filter(Boolean)
+    .map((origin) => {
       let url;
-      try { url = new URL(origin); } catch { throw new Error(`Origem CORS invalida: ${origin}`); }
-      if (url.origin !== origin || (isProduction && url.protocol !== "https:")) {
+      try {
+        url = new URL(origin);
+      } catch {
+        throw new Error(`Origem CORS invalida: ${origin}`);
+      }
+      if (
+        url.origin !== origin ||
+        (isProduction && url.protocol !== "https:")
+      ) {
         throw new Error(`Origem CORS invalida: ${origin}`);
       }
       return origin;
     });
-  if (isProduction && allowedOrigins.length === 0) {
-    throw new Error("ALLOWED_ORIGINS deve ser configurada em producao");
-  }
-
   let supabaseUrl = "";
   if (hasSupabaseUrl) {
     supabaseUrl = required(env, "SUPABASE_URL").replace(/\/$/, "");
@@ -51,14 +66,18 @@ export function loadConfig(env = process.env) {
   }
 
   return Object.freeze({
-    isProduction, port, allowedOrigins,
+    isProduction,
+    port,
+    allowedOrigins,
     discordToken: required(env, "DISCORD_TOKEN"),
     discordServer: required(env, "DISCORD_SERVER"),
     discordUser: required(env, "DISCORD_USER"),
     twitchClient: env.CLIENT_TWITCH?.trim() || "",
     twitchSecret: env.SECRET_TWITCH?.trim() || "",
     supabaseUrl,
-    supabaseServiceRoleKey: hasSupabaseKey ? required(env, "SUPABASE_SERVICE_ROLE_KEY") : "",
+    supabaseServiceRoleKey: hasSupabaseKey
+      ? required(env, "SUPABASE_SERVICE_ROLE_KEY")
+      : "",
     supabaseTable: table,
   });
 }

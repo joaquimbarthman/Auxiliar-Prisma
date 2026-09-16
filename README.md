@@ -43,8 +43,10 @@ repositorio.
 Use `.env.production.example` somente como lista de variaveis e cadastre os
 valores no gerenciador de segredos da hospedagem. Nunca copie o `.env` para a
 imagem, envie chaves ao Git ou coloque a chave `service_role` no frontend. Em
-producao, defina `NODE_ENV=production`; a aplicacao exigira Supabase e uma lista
-HTTPS explicita em `ALLOWED_ORIGINS` antes de iniciar.
+producao, defina `NODE_ENV=production`; a aplicacao exigira Supabase. Por padrao,
+o CORS aceita `https://barthman.com.br` e `https://www.barthman.com.br`. Use
+`ALLOWED_ORIGINS` para substituir essa lista por origens HTTPS separadas por
+virgula.
 
 Antes da publicacao, revogue e gere novamente o token do Discord e o segredo da
 Twitch. Valores antigos aparecem no primeiro commit do repositorio; apaga-los do
