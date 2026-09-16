@@ -6,8 +6,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "test": "node test/security.test.js && node test/config.test.js",
-    "format": "prettier --write index.js"
+    "test": "node test/security.test.js && node test/config.test.js"
   },
   "engines": {
     "node": ">=24.0.0 <25.0.0"
@@ -20,8 +19,5 @@
     "express-rate-limit": "^8.6.2",
     "helmet": "^8.3.0",
     "node-fetch": "^3.3.2"
-  },
-  "devDependencies": {
-    "prettier": "^3.9.7"
   }
 }
