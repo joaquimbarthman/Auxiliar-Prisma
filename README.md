@@ -26,6 +26,9 @@ PORT=3000
 # Use 1 somente se a hospedagem utilizar um unico proxy reverso confiavel.
 TRUST_PROXY_HOPS=0
 
+# Origens exatas autorizadas, separadas por virgula
+ALLOWED_ORIGINS=http://localhost:5500
+
 # Persistencia opcional no Supabase
 SUPABASE_URL=https://seu-projeto.supabase.co
 SUPABASE_SERVICE_ROLE_KEY=chave_service_role
@@ -34,6 +37,19 @@ SUPABASE_TABLE=profile_views
 
 O arquivo `.env` e ignorado pelo Git para evitar o envio de credenciais ao
 repositorio.
+
+## Publicacao segura
+
+Use `.env.production.example` somente como lista de variaveis e cadastre os
+valores no gerenciador de segredos da hospedagem. Nunca copie o `.env` para a
+imagem, envie chaves ao Git ou coloque a chave `service_role` no frontend. Em
+producao, defina `NODE_ENV=production`; a aplicacao exigira Supabase e uma lista
+HTTPS explicita em `ALLOWED_ORIGINS` antes de iniciar.
+
+Antes da publicacao, revogue e gere novamente o token do Discord e o segredo da
+Twitch. Valores antigos aparecem no primeiro commit do repositorio; apaga-los do
+commit atual nao os torna seguros. Se o repositorio foi compartilhado, trate
+todas as credenciais presentes no historico como comprometidas.
 
 ## Executando
 

@@ -24,6 +24,7 @@ test("adiciona headers HTTP de seguranca", async () => {
     assert.equal(response.headers.get("x-content-type-options"), "nosniff");
     assert.equal(response.headers.get("x-frame-options"), "SAMEORIGIN");
     assert.equal(response.headers.get("referrer-policy"), "no-referrer");
+    assert.equal(response.headers.get("cache-control"), "no-store");
   });
 });
 
@@ -45,4 +46,3 @@ test("bloqueia abuso da rota de visualizacoes", async () => {
     });
   });
 });
-

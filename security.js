@@ -28,6 +28,10 @@ export function configureSecurity(app, env = process.env) {
       crossOriginResourcePolicy: { policy: "cross-origin" },
     })
   );
+  app.use((req, res, next) => {
+    res.setHeader("Cache-Control", "no-store");
+    next();
+  });
 }
 
 export const globalLimiter = limiter({ windowMs: 15 * 60 * 1000, limit: 300 });
@@ -36,4 +40,3 @@ export const profileViewLimiter = limiter({
   windowMs: 24 * 60 * 60 * 1000,
   limit: 3,
 });
-
